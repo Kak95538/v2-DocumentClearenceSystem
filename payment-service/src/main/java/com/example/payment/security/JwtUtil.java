@@ -3,6 +3,7 @@ package com.example.payment.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -31,9 +32,13 @@ public class JwtUtil {
     }
 
     // Validate Token
-    public boolean validateToken(String token, String email) {
-        final String username = extractUsername(token);
-        return (username.equals(email) && !isTokenExpired(token));
+    public boolean validateToken(String token) {
+        try {
+            getClaims(token); // verifies signature + expiry
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public Claims getClaims(String token) {
