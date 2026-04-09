@@ -19,6 +19,7 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<Object> {
         return (exchange, chain) -> {
 
             ServerHttpRequest request = exchange.getRequest();
+            System.out.println(exchange.getRequest().getHeaders());
 
             // allow auth endpoints
             if (request.getURI().getPath().contains("/auth/")) {
@@ -47,13 +48,14 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<Object> {
                 return exchange.getResponse().setComplete();
             }
             
-            String emailFromToken = jwtUtil.extractUsername(token);
+            String email = jwtUtil.extractUsername(token);
 
-            request.mutate()
-                    .header("X-User-Email", emailFromToken)
+            ServerHttpRequest modifiedRequest = exchange.getRequest()
+                    .mutate()
+                    .header("X-User-Email", email)
                     .build();
 
-            return chain.filter(exchange);
+            return chain.filter(exchange.mutate().request(modifiedRequest).build());
         };
     }
 }

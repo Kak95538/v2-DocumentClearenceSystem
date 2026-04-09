@@ -16,6 +16,13 @@ spring:
           filters:
             - JwtAuthFilter
             
+        - id: document-service
+          uri: lb://DOCUMENT-SERVICE
+          predicates:
+            - Path=/documents/**
+#          filters:
+#             - AddRequestHeader=X-User-Email, ${email}
+            
 eureka:
   client:
     register-with-eureka: true
