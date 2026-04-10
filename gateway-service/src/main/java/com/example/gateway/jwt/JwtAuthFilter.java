@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -17,6 +19,7 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<Object> {
     public GatewayFilter apply(Object config) {
 
         return (exchange, chain) -> {
+        	
 
             ServerHttpRequest request = exchange.getRequest();
             System.out.println(exchange.getRequest().getHeaders());
@@ -49,10 +52,14 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<Object> {
             }
             
             String email = jwtUtil.extractUsername(token);
+            Claims claims = jwtUtil.getClaims(token);
+             email = claims.getSubject();
+            String role = claims.get("role", String.class);
 
             ServerHttpRequest modifiedRequest = exchange.getRequest()
                     .mutate()
                     .header("X-User-Email", email)
+                    .header("X-User-Role", role)
                     .build();
 
             return chain.filter(exchange.mutate().request(modifiedRequest).build());
