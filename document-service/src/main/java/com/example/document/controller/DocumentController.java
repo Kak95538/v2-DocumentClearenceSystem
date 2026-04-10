@@ -37,4 +37,13 @@ public class DocumentController {
                                         @RequestParam String status) {
         return service.updateStatus(id, status);
     }
+    
+    @PutMapping("/approve/{id}")
+    public DocumentRequest approve(@PathVariable Long id) {
+        return service.approveDocument(id);
+    }
+    @PutMapping("/reject/{id}")
+    public DocumentRequest reject(@PathVariable Long id) {
+        return service.rejectDocument(id);
+    }
 }

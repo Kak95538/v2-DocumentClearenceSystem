@@ -15,4 +15,12 @@ public interface DocumentService {
     List<DocumentRequest> getAllRequests();
 
     DocumentRequest updateStatus(Long id, String status);
+    
+    DocumentRequest approveDocument(Long id) ;
+    
+    public DocumentRequest rejectDocument(Long id);
+    
+    public void sendEmailNotification(String email, String message);
+
+
 }
